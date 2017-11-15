@@ -21,3 +21,32 @@ export function getData(el, name, val) {
     return el.getAttribute(name)
   }
 }
+
+let elementStyle = document.createElement('div').style
+
+let vender = (() => {
+  let transformNames = {
+    webkit: 'webkitTransform',
+    Moz: 'MoxTransform',
+    O: 'OTransform',
+    standard: 'transform'
+  }
+  for (let key in transformNames) {
+    if (elementStyle[transformNames[key]] !== undefined) {
+      return key
+    }
+  }
+  return false
+})()
+
+export function prefixStyle(style) {
+  if (!vender) {
+    return false
+  }
+
+  if (vender === 'standard') {
+    return style
+  }
+
+  return vender + style.charAt(0).toUpperCase() + style.substr(1)
+}
