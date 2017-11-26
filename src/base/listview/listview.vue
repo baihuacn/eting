@@ -74,8 +74,11 @@
       }
     },
     methods: {
+      refresh(){
+        this.$refs.listview.refresh()
+      },
       selectItem(item){
-        this.$emit('select',item)
+        this.$emit('select', item)
       },
       onShortcutStart(e){
         let anchorIndex = getData(e.target, 'index')

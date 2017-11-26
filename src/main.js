@@ -7,12 +7,18 @@ import Fastclick from 'fastclick'
 import VueLazyLoad from 'vue-lazyload'
 import store from './store'
 
+import VConsole from 'vconsole'
+
+const vConsole=new VConsole
+
+console.log('test')
+
 Vue.config.productionTip = false
 
 Fastclick.attach(document.body) // 移动端click事件有300ms的延迟，移动端双击是缩放操作。
 
 Vue.use(VueLazyLoad,{
-  loading:require('common/image/default.png')
+  loading:require('common/image/placeholder.png')
 })
 
 new Vue({

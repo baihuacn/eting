@@ -1,17 +1,20 @@
 <template>
   <transition name="slide">
-    <music-list :songs="songs" :title="title" :bg-image="bgImage"></music-list>
+    <music-list :title="title" :bgImage="bgImage" :songs="songs"></music-list>
   </transition>
 </template>
 
 <script>
+  import MusicList from 'components/music-list/music-list'
   import {mapGetters} from 'vuex'
-  import {getSingerDetail} from 'api/singer'
+  import {getSongList} from 'api/recommend'
   import {ERR_OK} from 'api/config'
   import {createSong} from 'common/js/song'
-  import MusicList from 'components/music-list/music-list'
 
   export default{
+    created(){
+      this._getSongList()
+    },
     data(){
       return {
         songs: []
@@ -19,34 +22,30 @@
     },
     computed: {
       title(){
-        return this.singer.name
+        return this.diss.dissname
       },
       bgImage(){
-        return this.singer.avatar
+        return this.diss.imgurl
       },
       ...mapGetters([
-        'singer'
+        'diss'
       ])
     },
-    created(){
-      this._getDetail()
-    },
     methods: {
-      _getDetail(){
-        if (!this.singer.id) {
-          this.$router.back()
+      _getSongList(){
+        if(!this.diss.dissid){
+          this.$router.push('/recommend')
         }
-        getSingerDetail(this.singer.id).then((res) => {
+        getSongList(this.diss.dissid).then((res) => {
           if (res.code === ERR_OK) {
-            this.songs = this._normalizeSongs(res.data.list)
+            this.songs=this._normalizeSongs(res.cdlist[0].songlist)
           }
         })
       },
       _normalizeSongs(list){
         let ret = []
-        list.forEach((item) => {
-          let {musicData} = item
-          if (musicData.songid && musicData.albummid) {
+        list.forEach((musicData) => {
+          if (musicData.songid && musicData.albumid) {
             ret.push(createSong(musicData))
           }
         })
@@ -60,7 +59,6 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~common/stylus/variable"
   .slide-enter-active, .slide-leave-active
     transition: all 0.3s
 
